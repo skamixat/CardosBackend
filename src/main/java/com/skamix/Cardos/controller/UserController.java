@@ -3,6 +3,8 @@ package com.skamix.Cardos.controller;
 import com.skamix.Cardos.entity.UserEntity;
 import com.skamix.Cardos.exceptoption.UserAlreadyExistException;
 import com.skamix.Cardos.exceptoption.UserNotFoundException;
+import com.skamix.Cardos.model.AuthRequest;
+import com.skamix.Cardos.model.AuthResponse;
 import com.skamix.Cardos.repository.UserRepo;
 import com.skamix.Cardos.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +21,8 @@ public class UserController {
     @PostMapping
     public ResponseEntity registration(@RequestBody UserEntity user){
         try {
-            userService.registration(user);
-            return ResponseEntity.ok("Пользователь успешно сохранен");
+            //userService.registration(user);
+            return ResponseEntity.ok(userService.registration(user));
         }catch (UserAlreadyExistException e){
             return  ResponseEntity.badRequest().body(e.getMessage());
         }catch (Exception e){
@@ -44,6 +46,18 @@ public class UserController {
             return ResponseEntity.ok(userService.delete(id));
         }catch (Exception e){
             return  ResponseEntity.badRequest().body("Произошла ошиба");
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody AuthRequest request){
+        try {
+            AuthResponse response = userService.login(request);
+            return ResponseEntity.ok(response);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(401).body(new AuthResponse(false, e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new AuthResponse(false, "Ошибка входа"));
         }
     }
 

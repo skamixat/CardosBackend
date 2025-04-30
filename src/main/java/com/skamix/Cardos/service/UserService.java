@@ -3,6 +3,8 @@ package com.skamix.Cardos.service;
 import com.skamix.Cardos.entity.UserEntity;
 import com.skamix.Cardos.exceptoption.UserAlreadyExistException;
 import com.skamix.Cardos.exceptoption.UserNotFoundException;
+import com.skamix.Cardos.model.AuthRequest;
+import com.skamix.Cardos.model.AuthResponse;
 import com.skamix.Cardos.model.User;
 import com.skamix.Cardos.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ public class UserService {
         return userRepo.save(user);
     }
 
+
     public User getOne(Long id_user) throws UserNotFoundException {
         UserEntity user = userRepo.findById(id_user).get();
         if(user == null){
@@ -34,4 +37,19 @@ public class UserService {
         userRepo.deleteById(id);
         return id;
     }
+
+    public AuthResponse login(AuthRequest request) throws UserNotFoundException {
+        UserEntity user = userRepo.findByLogin(request.getLogin());
+
+        if (user == null) {
+            throw new UserNotFoundException("Пользователь не найден");
+        }
+
+        if (!user.getPassword().equals(request.getPassword())) {
+            throw new UserNotFoundException("Неверный пароль");
+        }
+
+        return new AuthResponse(true, "Вход выполнен");
+    }
+
 }
