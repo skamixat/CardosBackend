@@ -51,13 +51,14 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request){
+        Long error = 404L;
         try {
             AuthResponse response = userService.login(request);
             return ResponseEntity.ok(response);
         } catch (UserNotFoundException e) {
-            return ResponseEntity.status(401).body(new AuthResponse(false, e.getMessage()));
+            return ResponseEntity.status(401).body(new AuthResponse(error, false, e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new AuthResponse(false, "Ошибка входа"));
+            return ResponseEntity.badRequest().body(new AuthResponse(error, false, "Ошибка входа"));
         }
     }
 

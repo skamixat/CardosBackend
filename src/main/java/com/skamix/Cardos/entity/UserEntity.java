@@ -50,4 +50,6 @@ public class UserEntity {
     public void setWords(List<WordEntity> words) {
         this.words = words;
     }
+
+
 }

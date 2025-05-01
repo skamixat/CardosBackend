@@ -49,7 +49,9 @@ public class UserService {
             throw new UserNotFoundException("Неверный пароль");
         }
 
-        return new AuthResponse(true, "Вход выполнен");
+        Long id = user.getId_user();
+
+        return new AuthResponse(id, true, "Вход выполнен");
     }
 
 }
